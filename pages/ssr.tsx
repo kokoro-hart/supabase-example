@@ -1,12 +1,12 @@
-import type { NextPage, GetStaticProps } from "next";
+import type { NextPage, GetServerSideProps } from "next";
 import { Layout } from "../components/Layout";
 import { Task, Notice } from "../types";
-import { supabase } from "../utils/supabase";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { supabase } from "../utils/supabase";
 
-export const getStaticProps: GetStaticProps = async () => {
-  console.log("getStaticProps//ssg invoked");
+export const getServerSideProps: GetServerSideProps = async () => {
+  console.log("getServerSideProps//ssr invoked");
 
   const { data: tasks } = await supabase
     .from("todos")
@@ -31,11 +31,11 @@ type Props = {
   notices: Notice[];
 };
 
-const Ssg: NextPage<Props> = ({ tasks, notices }) => {
+const Ssr: NextPage<Props> = ({ tasks, notices }) => {
   const router = useRouter();
   return (
-    <Layout title="SSG">
-      <p className="mb-3 text-blue-500">SG</p>
+    <Layout title="SSR">
+      <p className="mb-3 text-blue-500">SSR</p>
       <ul className="mb-3">
         {tasks.map(({ id, title }) => {
           return (
@@ -54,14 +54,14 @@ const Ssg: NextPage<Props> = ({ tasks, notices }) => {
           );
         })}
       </ul>
-      <Link className="my-3 text-xs" href="/ssr" prefetch={false}>
-        Link to SSR
+      <Link className="my-3 text-xs" href="/ssg" prefetch={false}>
+        Link to SG
       </Link>
       <Link className="mb-3 text-xs" href="/isr" prefetch={false}>
         Link to ISR
       </Link>
-      <button className="mb-3 text-xs" onClick={() => router.push("/ssr")}>
-        Route to SSR
+      <button className="mb-3 text-xs" onClick={() => router.push("/ssg")}>
+        Route to SG
       </button>
       <button className="mb-3 text-xs" onClick={() => router.push("/isr")}>
         Route to ISR
@@ -70,4 +70,4 @@ const Ssg: NextPage<Props> = ({ tasks, notices }) => {
   );
 };
 
-export default Ssg;
+export default Ssr;
